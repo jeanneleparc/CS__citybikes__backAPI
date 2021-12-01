@@ -19,6 +19,11 @@ mongoose.connect(MONGO_URI, {
 
 const db = mongoose.connection;
 
+app.use((req, res, next) => {
+   res.header('Access-Control-Allow-Origin', 'http://localhost:4200');
+   next();
+ });
+
 app.get('/', (req, res) => {
    res.send('Hello World, database is connected');
 });
