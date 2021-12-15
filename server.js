@@ -2,9 +2,10 @@ const express = require('express');
 const routes = require('./src/routes/station_route'); // import the routes
 
 const mongoose = require('mongoose');
-const { MONGO_URI } = require('./../config');
 
 const app = express();
+
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/citibikes?retryWrites=true&w=majority';
 
 mongoose.connect(MONGO_URI, {
    useNewUrlParser: true,
