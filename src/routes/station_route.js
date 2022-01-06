@@ -7,8 +7,8 @@ const { status } = require('express/lib/response');
 // const stationController = require('../controllers/station_controller');
 
 router.get('/station_status', async (req, res) => {
-	const lastStatus = await StationStatus.findOne().sort({ 'last_updated': -1 }); // récupérer la dernière date d'update
-	const status = await StationStatus.find({ 'last_updated': lastStatus.last_updated }) // récupérer les status à cette date
+	const lastStatus = await StationStatus.findOne().sort({ 'last_updated': -1 }); // get the last update date
+	const status = await StationStatus.find({ 'last_updated': lastStatus.last_updated }) // get all status for this date
 	res.send(status)
 })
 
