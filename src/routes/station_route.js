@@ -7,11 +7,20 @@ const StationInformation = require("../models/station-information-model");
 // const stationController = require('../controllers/station_controller');
 
 router.get("/station_status", async (req, res) => {
-  const lastStatus = await StationStatus.findOne().sort({ last_updated: -1 }); // get the last update date
-  const status = await StationStatus.find({
-    last_updated: lastStatus.last_updated,
-  }); // get all status for this date
-  res.send(status);
+  const lastStatus = await StationStatus.findOne().sort({ last_updated: -1 });
+  return StationStatus.find({
+    last_updated: lastStatus ? lastStatus.last_updated : undefined,
+  })
+    .then((result) => {
+      if (lastStatus) {
+        res.send(result);
+      } else {
+        res.status(202).send({ message: "No status in collection" });
+      }
+    })
+    .catch((err) => {
+      res.status(500).json(err);
+    });
 });
 
 router.get("/station_information", async (req, res) => {
