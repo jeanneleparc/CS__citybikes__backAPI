@@ -1,23 +1,11 @@
 const express = require("express");
-
 const router = express.Router();
-const StationStatus = require("../models/station-status-model");
-const StationInformation = require("../models/station-information-model");
+var StationController = require('../controllers/station_controller')
 
-// const stationController = require('../controllers/station_controller');
+router.get("/station_status", StationController.getLastStatus)
 
-router.get("/station_status", async (req, res) => {
-  const lastStatus = await StationStatus.findOne().sort({ last_updated: -1 }); // get the last update date
-  const status = await StationStatus.find({
-    last_updated: lastStatus.last_updated,
-  }); // get all status for this date
-  res.send(status);
-});
+router.get("/station_information", StationController.getLastInformation)
 
-router.get("/station_information", async (req, res) => {
-  const information = await StationInformation.find().sort({
-    last_updated: -1,
-  });
-  res.send(information);
-});
+router.get('/stats_avg_filling_rate/:id/:day', StationController.getAvgFillingRateByIdByDay)
+
 module.exports = router;
