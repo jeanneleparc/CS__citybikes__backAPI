@@ -1,5 +1,6 @@
 // Appel des modules
 const request = require("supertest");
+const mongoose = require("mongoose");
 const server = require("../app");
 const Status = require("../src/models/station-status-model");
 
@@ -16,6 +17,10 @@ function deleteAll() {
 }
 
 beforeAll(() => deleteAll());
+
+afterAll(() => {
+  mongoose.connection.close();
+});
 
 describe("Route Status", () => {
   const mockStatus = {

@@ -9,10 +9,23 @@ workflows:
 jobs:
   build:
     docker:
-      # specify the version you desire here
       - image: circleci/node:12
+      - image: circleci/mongo:4.4.1
+        environment:
+          MONGO_URI: mongodb://mongo:27017/citibikes-test
     steps:
       - checkout
+
+      - run:
+          name: Waiting for MongoDB to be ready
+          command: |
+            for i in `seq 1 30`;
+            do
+              nc -z localhost 27017 && echo Success && exit 0
+              echo -n .
+              sleep 1
+            done
+            echo Failed waiting for MongoDB && exit 1
 
       # Download and cache dependencies
       - restore_cache:
@@ -25,7 +38,14 @@ jobs:
           paths:
             - ./node_modules
       
+
+
       # run lint!
       - run:
           name: lint
           command: npm run lint
+
+      # run test!
+      - run:
+          name: test
+          command: npm run test
