@@ -1,7 +1,7 @@
 // Appel des modules
 const request = require("supertest");
 const mongoose = require("mongoose");
-const server = require("../app");
+const app = require("../app");
 const Status = require("../src/models/station-status-model");
 
 const url = "/station_status";
@@ -40,7 +40,7 @@ describe("Route Status", () => {
     has_kiosk: true,
   };
   test("#1 - GET / - Without data return 202", async () => {
-    const response = await request(server).get(url);
+    const response = await request(app).get(url);
     expect(response).toBeDefined();
     expect(response.statusCode).toBe(202);
     expect(response.body.message).toBe("No status in collection");
@@ -50,7 +50,7 @@ describe("Route Status", () => {
     // Populate DB
     await Status.create(mockStatus);
 
-    const response = await request(server).get(`${url}`);
+    const response = await request(app).get(`${url}`);
 
     expect(response).toBeDefined();
     expect(response.statusCode).toBe(200);

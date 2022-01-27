@@ -1,7 +1,7 @@
 // Appel des modules
 const request = require("supertest");
 const mongoose = require("mongoose");
-const server = require("../app");
+const app = require("../app");
 const Information = require("../src/models/station-information-model");
 
 const url = "/station_information";
@@ -33,11 +33,18 @@ describe("Route Information", () => {
     has_kiosk: true,
   };
 
-  test("#1 - GET / - Good", async () => {
+  test("#1 - GET / - Without data", async () => {
+    const response = await request(app).get(url);
+    expect(response).toBeDefined();
+    expect(response.statusCode).toBe(200);
+    expect(response.body.length).toBe(0);
+  });
+
+  test("#2 - GET / - Good", async () => {
     // Populate DB
     await Information.create(mockInformation);
 
-    const response = await request(server).get(`${url}`);
+    const response = await request(app).get(`${url}`);
 
     expect(response).toBeDefined();
     expect(response.statusCode).toBe(200);
