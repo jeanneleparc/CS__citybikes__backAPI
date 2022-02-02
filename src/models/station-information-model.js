@@ -16,6 +16,6 @@ const stationInformation = mongoose.model(
 );
 module.exports = stationInformation;
 
-module.exports.get = function (callback, limit) {
+module.exports.get = (callback, limit) => {
   stationInformation.find(callback).limit(limit);
 };

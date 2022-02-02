@@ -3,21 +3,21 @@ const StationStatus = require("../models/station-status-model");
 const StationInformation = require("../models/station-information-model");
 const StatsByStationByHour = require("../models/stats-by-station-by-hour-model");
 
-exports.getLastStatus = async function () {
+exports.getLastStatus = async () => {
   const lastStatus = await StationStatus.findOne().sort({ last_updated: -1 });
   return StationStatus.find({
     last_updated: lastStatus ? lastStatus.last_updated : undefined,
   });
 };
 
-exports.getLastInformation = async function () {
+exports.getLastInformation = async () => {
   const information = await StationInformation.find().sort({
     last_updated: -1,
   });
   return information;
 };
 
-exports.getAvgFillingRateByIdByDay = async function (idStation, day) {
+exports.getAvgFillingRateByIdByDay = async (idStation, day) => {
   const dateOfDay = moment().tz("America/New_York").day(day).startOf("day");
   const dateOfToday = moment().tz("America/New_York").startOf("day");
   if (dateOfToday <= dateOfDay) {

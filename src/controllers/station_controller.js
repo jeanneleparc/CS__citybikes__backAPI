@@ -1,6 +1,6 @@
 const StationService = require("../services/station_service");
 
-exports.getLastStatus = async function (req, res) {
+exports.getLastStatus = async (req, res) => {
   try {
     const status = await StationService.getLastStatus();
     if (status.length !== 0) {
@@ -12,7 +12,7 @@ exports.getLastStatus = async function (req, res) {
   }
 };
 
-exports.getLastInformation = async function (req, res) {
+exports.getLastInformation = async (req, res) => {
   try {
     const information = await StationService.getLastInformation();
     return res.send(information);
@@ -21,7 +21,7 @@ exports.getLastInformation = async function (req, res) {
   }
 };
 
-exports.getAvgFillingRateByIdByDay = async function (req, res) {
+exports.getAvgFillingRateByIdByDay = async (req, res) => {
   try {
     const { id } = req.params;
     const { day } = req.params;
