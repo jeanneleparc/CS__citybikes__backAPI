@@ -3,7 +3,7 @@ const StationService = require("../services/station_service");
 exports.getLastStatus = async function (req, res) {
   try {
     const status = await StationService.getLastStatus();
-    if (status) {
+    if (status.length !== 0) {
       return res.send(status);
     }
     return res.status(202).send({ message: "No status in collection" });
