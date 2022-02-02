@@ -24,6 +24,7 @@ exports.getAvgFillingRateByIdByDay = async function (idStation, day) {
     dateOfDay.subtract(7, "days");
   }
   const dataAvgFillingRate = [];
+  // Get the data for the last three weeks
   const stats = await StatsByStationByHour.find({
     station_id: idStation,
     $or: [
@@ -54,7 +55,7 @@ exports.getAvgFillingRateByIdByDay = async function (idStation, day) {
     );
     dataAvgFillingRate.push({
       timeSlot,
-      avgFillingRate: sumFillingRateByTimeSlot / 3,
+      avgFillingRate: sumFillingRateByTimeSlot / 3, // we divide by the number of weeks
     });
   }
   return dataAvgFillingRate;
