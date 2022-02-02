@@ -3,11 +3,10 @@ const StationService = require("../services/station_service");
 exports.getLastStatus = async function (req, res) {
   try {
     const status = await StationService.getLastStatus();
-    if (status){
+    if (status) {
       return res.send(status);
-    } else {
-      return res.status(202).send({ message: "No status in collection" });
     }
+    return res.status(202).send({ message: "No status in collection" });
   } catch (e) {
     return res.status(400).json({ status: 400, message: e.message });
   }

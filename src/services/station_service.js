@@ -7,7 +7,7 @@ exports.getLastStatus = async function () {
   const lastStatus = await StationStatus.findOne().sort({ last_updated: -1 });
   return StationStatus.find({
     last_updated: lastStatus ? lastStatus.last_updated : undefined,
-  })
+  });
 };
 
 exports.getLastInformation = async function () {
