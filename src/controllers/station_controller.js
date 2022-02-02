@@ -23,9 +23,21 @@ exports.getLastInformation = async (req, res) => {
 
 exports.getAvgFillingRateByIdByDay = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { day } = req.params;
+    const { id, day } = req.params;
     const stats = await StationService.getAvgFillingRateByIdByDay(id, day);
+    return res.json(stats);
+  } catch (e) {
+    return res.status(400).json({ status: 400, message: e.message });
+  }
+};
+
+exports.getAvgFillingRateByTimeSlotByDay = async (req, res) => {
+  try {
+    const { timeslot, day } = req.params;
+    const stats = await StationService.getAvgFillingRatesByTimeSlot(
+      timeslot,
+      day
+    );
     return res.json(stats);
   } catch (e) {
     return res.status(400).json({ status: 400, message: e.message });

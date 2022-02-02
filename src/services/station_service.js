@@ -60,3 +60,56 @@ exports.getAvgFillingRateByIdByDay = async (idStation, day) => {
   }
   return dataAvgFillingRate;
 };
+
+exports.getAvgFillingRatesByTimeSlot = async (timeSlot, day) => {
+  // check if dayOfWeek <= todayDayOfWeek, otherwise substract 7 days
+  const dateOfDay = moment().tz("America/New_York").day(day).startOf("day");
+  const dateOfToday = moment().tz("America/New_York").startOf("day");
+  if (dateOfToday <= dateOfDay) {
+    dateOfDay.subtract(7, "days");
+  }
+  const result = [];
+
+  // Get the data for the last three weeks of each station for the timeslot
+  const stats = await StatsByStationByHour.find({
+    time_slot: timeSlot,
+    $or: [
+      { date: { $gte: dateOfDay, $lt: dateOfDay.clone().add(1, "day") } },
+      {
+        date: {
+          $gte: dateOfDay.clone().subtract(7, "days"),
+          $lt: dateOfDay.clone().subtract(6, "days"),
+        },
+      },
+      {
+        date: {
+          $gte: dateOfDay.clone().subtract(14, "days"),
+          $lt: dateOfDay.clone().subtract(13, "days"),
+        },
+      },
+    ],
+  });
+
+  const tmpStations = {};
+  stats.forEach((stat) => {
+    const stationId = stat.station_id;
+    if (tmpStations[stat.stationId]) {
+      tmpStations[stationId].accumulator += stat.filling_rate;
+      tmpStations[stationId].counter += 1;
+    } else {
+      tmpStations[stationId] = {
+        accumulator: stat.filling_rate,
+        counter: 1,
+      };
+    }
+  }, {});
+
+  Object.keys(tmpStations).forEach((stationId) => {
+    const station = tmpStations[stationId];
+    result.push({
+      stationId,
+      value: station.accumulator / station.counter,
+    });
+  });
+  return result;
+};

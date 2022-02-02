@@ -12,4 +12,9 @@ router.get(
   StationController.getAvgFillingRateByIdByDay
 );
 
+router.get(
+  "/stats_avg_filling_rate_by_timeslot/:timeslot/:day",
+  StationController.getAvgFillingRateByTimeSlotByDay
+);
+
 module.exports = router;
