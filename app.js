@@ -26,6 +26,7 @@ class App {
     this.server.use(express.json());
     this.server.use((req, res, next) => {
       res.header("Access-Control-Allow-Origin", "http://localhost:4200");
+      res.header("Access-Control-Allow-Origin", "http://127.0.0.1:4200");
       next();
     });
   }
