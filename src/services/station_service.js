@@ -4,11 +4,10 @@ const StationInformation = require("../models/station-information-model");
 const StatsByStationByHour = require("../models/stats-by-station-by-hour-model");
 
 exports.getLastStatus = async function () {
-  const lastStatus = await StationStatus.findOne().sort({ last_updated: -1 }); // get the last update date
-  const status = await StationStatus.find({
-    last_updated: lastStatus.last_updated,
-  }); // get all status for this date
-  return status;
+  const lastStatus = await StationStatus.findOne().sort({ last_updated: -1 });
+  return StationStatus.find({
+    last_updated: lastStatus ? lastStatus.last_updated : undefined,
+  })
 };
 
 exports.getLastInformation = async function () {
