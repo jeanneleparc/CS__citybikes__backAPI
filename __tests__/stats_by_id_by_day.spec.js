@@ -51,7 +51,7 @@ describe("Route Stats By Id By Day", () => {
   }
   const avgFillingRate = sumFillingRateArray.map((elt) => elt / 3);
 
-  test("#1 - GET / - Without data return 202", async () => {
+  test("#1 - GET / - Without data return 200", async () => {
     const response = await request(app).get(`${url}1/${dayOfTheWeek}`);
     expect(response).toBeDefined();
     expect(response.statusCode).toBe(200);
