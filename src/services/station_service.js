@@ -109,7 +109,7 @@ exports.getAvgFillingRatesByTimeSlot = async (timeSlot, day) => {
   Object.keys(tmpStations).forEach((stationId) => {
     const station = tmpStations[stationId];
     result.push({
-      stationId,
+      stationId: parseInt(stationId, 10),
       fillingRate: station.accumulator / station.counter,
     });
   });
