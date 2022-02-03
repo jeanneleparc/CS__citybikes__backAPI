@@ -2,11 +2,11 @@ const express = require("express");
 const mongoose = require("mongoose");
 const routes = require("./src/routes/station_route"); // import the routes
 
-const MONGO_URI = "mongodb://127.0.0.1:27017/citibikes-test";
-// process.env.MONGO_URI ||
-// `mongodb://127.0.0.1:27017/citibikes${
-//   process.env.NODE_ENV === "test" ? "-test" : ""
-// }`;
+const MONGO_URI =
+  process.env.MONGO_URI ||
+  `mongodb://127.0.0.1:27017/citibikes${
+    process.env.NODE_ENV === "test" ? "-test" : ""
+  }`;
 
 class App {
   constructor() {
