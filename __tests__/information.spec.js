@@ -37,7 +37,7 @@ describe("Route Information", () => {
     const response = await request(app).get(url);
     expect(response).toBeDefined();
     expect(response.statusCode).toBe(200);
-    expect(response.body.length).toBe(0);
+    expect(response.body).toHaveLength(0);
   });
 
   test("#2 - GET / - Good", async () => {
@@ -48,7 +48,7 @@ describe("Route Information", () => {
 
     expect(response).toBeDefined();
     expect(response.statusCode).toBe(200);
-    expect(response.body.length).toBe(1);
+    expect(response.body).toHaveLength(1);
     expect(response.body[0].id).toBe(mockInformation.id);
     expect(response.body[0].name).toBe(mockInformation.name);
     expect(response.body[0].longitude).toBe(mockInformation.longitude);

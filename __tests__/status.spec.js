@@ -54,7 +54,7 @@ describe("Route Status", () => {
 
     expect(response).toBeDefined();
     expect(response.statusCode).toBe(200);
-    expect(response.body.length).toBe(1);
+    expect(response.body).toHaveLength(1);
     expect(response.body[0].id).toBe(mockStatus.id);
     expect(response.body[0].name).toBe(mockStatus.name);
     expect(response.body[0].longitude).toBe(mockStatus.longitude);
