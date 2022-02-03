@@ -17,32 +17,54 @@ exports.getLastInformation = async () => {
   return information;
 };
 
-exports.getAvgFillingRateByIdByDay = async (idStation, day) => {
-  const dateOfDay = moment().tz("America/New_York").day(day).startOf("day");
-  const dateOfToday = moment().tz("America/New_York").startOf("day");
-  if (dateOfToday <= dateOfDay) {
-    dateOfDay.subtract(7, "days");
+function getWeekDayMarker(weekDay) {
+  // get last date of weekDay (monday, tuesday...)
+  console.log(moment().tz("America/New_York").day(weekDay));
+  const startOfLastWeekDay = moment()
+    .tz("America/New_York")
+    .day(weekDay)
+    .startOf("day");
+  const weekDayOfToday = moment().tz("America/New_York").startOf("day");
+  if (weekDayOfToday <= startOfLastWeekDay) {
+    startOfLastWeekDay.subtract(7, "days");
   }
-  const dataAvgFillingRate = [];
-  // Get the data for the last three weeks
-  const stats = await StatsByStationByHour.find({
-    station_id: idStation,
+  return startOfLastWeekDay;
+}
+
+async function getStatsForLast3Weeks(dateOfLastWeekDay, otherParams) {
+  return StatsByStationByHour.find({
+    ...otherParams,
     $or: [
-      { date: { $gte: dateOfDay, $lt: dateOfDay.clone().add(1, "day") } },
       {
         date: {
-          $gte: dateOfDay.clone().subtract(7, "days"),
-          $lt: dateOfDay.clone().subtract(6, "days"),
+          $gte: dateOfLastWeekDay,
+          $lt: dateOfLastWeekDay.clone().add(1, "day"),
         },
       },
       {
         date: {
-          $gte: dateOfDay.clone().subtract(14, "days"),
-          $lt: dateOfDay.clone().subtract(13, "days"),
+          $gte: dateOfLastWeekDay.clone().subtract(7, "days"),
+          $lt: dateOfLastWeekDay.clone().subtract(6, "days"),
+        },
+      },
+      {
+        date: {
+          $gte: dateOfLastWeekDay.clone().subtract(14, "days"),
+          $lt: dateOfLastWeekDay.clone().subtract(13, "days"),
         },
       },
     ],
   });
+}
+
+exports.getAvgFillingRateByIdByDay = async (idStation, day) => {
+  const dateOfLastWeekDay = getWeekDayMarker(day);
+  const dataAvgFillingRate = [];
+  // Get the data for the last three weeks
+  const stats = await getStatsForLast3Weeks(dateOfLastWeekDay, {
+    station_id: idStation,
+  });
+
   for (let timeSlot = 0; timeSlot < 24; timeSlot += 1) {
     const sumFillingRateByTimeSlot = stats.reduce(
       (accumulator, currentValue) => {
@@ -63,37 +85,18 @@ exports.getAvgFillingRateByIdByDay = async (idStation, day) => {
 
 exports.getAvgFillingRatesByTimeSlot = async (timeSlot, day) => {
   // check if dayOfWeek <= todayDayOfWeek, otherwise substract 7 days
-  const dateOfDay = moment().tz("America/New_York").day(day).startOf("day");
-  const dateOfToday = moment().tz("America/New_York").startOf("day");
-  if (dateOfToday <= dateOfDay) {
-    dateOfDay.subtract(7, "days");
-  }
-  const result = [];
+  const dateOfDay = getWeekDayMarker(day);
 
   // Get the data for the last three weeks of each station for the timeslot
-  const stats = await StatsByStationByHour.find({
-    time_slot: timeSlot,
-    $or: [
-      { date: { $gte: dateOfDay, $lt: dateOfDay.clone().add(1, "day") } },
-      {
-        date: {
-          $gte: dateOfDay.clone().subtract(7, "days"),
-          $lt: dateOfDay.clone().subtract(6, "days"),
-        },
-      },
-      {
-        date: {
-          $gte: dateOfDay.clone().subtract(14, "days"),
-          $lt: dateOfDay.clone().subtract(13, "days"),
-        },
-      },
-    ],
-  });
+  const stats = await getStatsForLast3Weeks(dateOfDay, { time_slot: timeSlot });
 
+  const result = [];
   const tmpStations = {};
+
+  // for each station, sum the filling_rate of each stat and count the number of stats
   stats.forEach((stat) => {
     const stationId = stat.station_id;
-    if (tmpStations[stat.stationId]) {
+    if (tmpStations[stationId]) {
       tmpStations[stationId].accumulator += stat.filling_rate;
       tmpStations[stationId].counter += 1;
     } else {
@@ -104,11 +107,12 @@ exports.getAvgFillingRatesByTimeSlot = async (timeSlot, day) => {
     }
   }, {});
 
+  // compute the average filling rate for each station
   Object.keys(tmpStations).forEach((stationId) => {
     const station = tmpStations[stationId];
     result.push({
       stationId,
-      value: station.accumulator / station.counter,
+      fillingRate: station.accumulator / station.counter,
     });
   });
   return result;

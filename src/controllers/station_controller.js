@@ -22,8 +22,8 @@ exports.getLastInformation = async (req, res) => {
 };
 
 exports.getAvgFillingRateByIdByDay = async (req, res) => {
+  const { id, day } = req.params;
   try {
-    const { id, day } = req.params;
     const stats = await StationService.getAvgFillingRateByIdByDay(id, day);
     return res.json(stats);
   } catch (e) {
@@ -32,11 +32,11 @@ exports.getAvgFillingRateByIdByDay = async (req, res) => {
 };
 
 exports.getAvgFillingRateByTimeSlotByDay = async (req, res) => {
+  const { timeSlot, weekDay } = req.body;
   try {
-    const { timeslot, day } = req.params;
     const stats = await StationService.getAvgFillingRatesByTimeSlot(
-      timeslot,
-      day
+      timeSlot,
+      weekDay % 7 // get last weekDay
     );
     return res.json(stats);
   } catch (e) {
