@@ -17,9 +17,8 @@ exports.getLastInformation = async () => {
   return information;
 };
 
-function getWeekDayMarker(weekDay) {
+const getWeekDayMarker = (weekDay) => {
   // get last date of weekDay (monday, tuesday...)
-  console.log(moment().tz("America/New_York").day(weekDay));
   const startOfLastWeekDay = moment()
     .tz("America/New_York")
     .day(weekDay)
@@ -29,10 +28,10 @@ function getWeekDayMarker(weekDay) {
     startOfLastWeekDay.subtract(7, "days");
   }
   return startOfLastWeekDay;
-}
+};
 
-async function getStatsForLast3Weeks(dateOfLastWeekDay, otherParams) {
-  return StatsByStationByHour.find({
+const getStatsForLast3Weeks = async (dateOfLastWeekDay, otherParams) =>
+  StatsByStationByHour.find({
     ...otherParams,
     $or: [
       {
@@ -55,7 +54,6 @@ async function getStatsForLast3Weeks(dateOfLastWeekDay, otherParams) {
       },
     ],
   });
-}
 
 exports.getAvgFillingRateByIdByDay = async (idStation, day) => {
   const dateOfLastWeekDay = getWeekDayMarker(day);
@@ -105,7 +103,7 @@ exports.getAvgFillingRatesByTimeSlot = async (timeSlot, day) => {
         counter: 1,
       };
     }
-  }, {});
+  });
 
   // compute the average filling rate for each station
   Object.keys(tmpStations).forEach((stationId) => {
