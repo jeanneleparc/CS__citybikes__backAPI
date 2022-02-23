@@ -38,23 +38,32 @@ function createMockStat({ stationId, timeSlot, date, fillingRate }) {
 }
 
 describe("Route Average Filling Rate by Time Slot", () => {
+  // 3 mock data with 1 on a Sunday
   const mockData = [
     {
       stationId: 1,
       timeSlot: 1,
-      date: moment().day("monday"),
+      date: moment().day("monday").tz("America/New_York").startOf("day"),
       fillingRate: 0.75,
     },
     {
       stationId: 1,
       timeSlot: 1,
-      date: moment().day("monday").subtract(0.5, "days"),
+      date: moment()
+        .day("monday")
+        .tz("America/New_York")
+        .startOf("day")
+        .subtract(1, "days"),
       fillingRate: 1,
     },
     {
       stationId: 1,
       timeSlot: 1,
-      date: moment().day("monday").subtract(14, "days"),
+      date: moment()
+        .day("monday")
+        .tz("America/New_York")
+        .startOf("day")
+        .subtract(14, "days"),
       fillingRate: 0.25,
     },
   ];
@@ -65,7 +74,7 @@ describe("Route Average Filling Rate by Time Slot", () => {
     return stats;
   }, []);
 
-  const body = { weekDay: "monday", timeSlot: 1 };
+  const body = { weekDay: "Monday", timeSlot: 1 };
 
   test("#1 - GET / - Without params timeSlot and weekDay", async () => {
     const response = await request(app).post(url);
@@ -112,11 +121,6 @@ describe("Route Average Filling Rate by Time Slot", () => {
   });
 
   test("#4 - GET / - Correct response (test timeslot)", async () => {
-    // Populate DB
-    await mockStats.forEach((mockStat) =>
-      statsByStationByHour.create(mockStat)
-    );
-
     const response = await request(app)
       .post(url)
       .send({ weekDay: "Monday", timeSlot: 25 });

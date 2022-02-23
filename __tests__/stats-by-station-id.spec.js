@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 const app = require("../app");
 const StatsByStationByHour = require("../src/models/stats-by-station-by-hour-model");
 
-const url = "/stats_avg_filling_rate/";
+const url = "/stats_avg_filling_rate_by_station";
 
 /* Supprimer tous les status */
 function deleteAll() {
@@ -71,7 +71,7 @@ describe("Route Stats By Id By Day", () => {
   test("#2 - GET / - Uncorrect weekDay", async () => {
     const response = await request(app)
       .post(url)
-      .send({ weekDay: "hello", id: 1 });
+      .send({ id: 1, weekDay: "hello" });
     expect(response).toBeDefined();
     expect(response.statusCode).toBe(400);
     expect(response.body.message).toBe(
@@ -82,7 +82,7 @@ describe("Route Stats By Id By Day", () => {
   test("#3 - GET / - Uncorrect station id", async () => {
     const response = await request(app)
       .post(url)
-      .send({ weekDay: dayOfTheWeek, timeSlot: "Hello" });
+      .send({ id: "Hello", weekDay: dayOfTheWeek });
     expect(response).toBeDefined();
     expect(response.statusCode).toBe(400);
     expect(response.body.message).toBe("Station id must be a number.");
