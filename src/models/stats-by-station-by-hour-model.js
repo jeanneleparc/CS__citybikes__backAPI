@@ -18,6 +18,6 @@ const statsByStationByHour = mongoose.model(
 
 module.exports = statsByStationByHour;
 
-module.exports.get = function (callback, limit) {
+module.exports.get = (callback, limit) => {
   statsByStationByHour.find(callback).limit(limit);
 };

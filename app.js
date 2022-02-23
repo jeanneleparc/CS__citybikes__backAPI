@@ -1,4 +1,5 @@
 const express = require("express");
+const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const routes = require("./src/routes/station_route"); // import the routes
 
@@ -25,9 +26,17 @@ class App {
   middlewares() {
     this.server.use(express.json());
     this.server.use((req, res, next) => {
-      res.header("Access-Control-Allow-Origin", "http://localhost:4200");
+      const allowedOrigins = ["http://localhost:4200", "http://127.0.0.1:4200"];
+      const { origin } = req.headers;
+      if (allowedOrigins.includes(origin)) {
+        res.setHeader("Access-Control-Allow-Origin", origin);
+      }
+      res.header("Access-Control-Allow-Methods", "GET, OPTIONS");
+      res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+      res.header("Access-Control-Allow-Credentials", true);
       next();
     });
+    this.server.use(bodyParser.json({ extended: true }));
   }
 
   routes() {

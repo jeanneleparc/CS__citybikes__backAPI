@@ -20,6 +20,6 @@ const stationStatusSchema = mongoose.Schema({
 const stationStatus = mongoose.model("stationstatus", stationStatusSchema);
 module.exports = stationStatus;
 
-module.exports.get = function (callback, limit) {
+module.exports.get = (callback, limit) => {
   stationStatus.find(callback).limit(limit);
 };

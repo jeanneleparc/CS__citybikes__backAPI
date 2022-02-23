@@ -1,6 +1,15 @@
 const StationService = require("../services/station_service");
 
-exports.getLastStatus = async function (req, res) {
+const WEEK_DAYS = [
+  "monday",
+  "tuesday",
+  "wednesday",
+  "thursday",
+  "saturday",
+  "sunday",
+];
+
+exports.getLastStatus = async (req, res) => {
   try {
     const status = await StationService.getLastStatus();
     if (status.length !== 0) {
@@ -12,7 +21,7 @@ exports.getLastStatus = async function (req, res) {
   }
 };
 
-exports.getLastInformation = async function (req, res) {
+exports.getLastInformation = async (req, res) => {
   try {
     const information = await StationService.getLastInformation();
     return res.send(information);
@@ -21,11 +30,40 @@ exports.getLastInformation = async function (req, res) {
   }
 };
 
-exports.getAvgFillingRateByIdByDay = async function (req, res) {
+exports.getAvgFillingRateByIdByDay = async (req, res) => {
+  const { id, day } = req.params;
   try {
-    const { id } = req.params;
-    const { day } = req.params;
     const stats = await StationService.getAvgFillingRateByIdByDay(id, day);
+    return res.json(stats);
+  } catch (e) {
+    return res.status(400).json({ status: 400, message: e.message });
+  }
+};
+
+exports.getAvgFillingRateByTimeSlotByDay = async (req, res) => {
+  const { weekDay, timeSlot } = req.body;
+
+  if (timeSlot === undefined || weekDay === undefined) {
+    return res.status(400).json({
+      status: 400,
+      message: "You must give a timeSlot and a weekDay.",
+    });
+  }
+  if (typeof timeSlot !== "number") {
+    return res
+      .status(400)
+      .json({ status: 400, message: "Time slot must be a number." });
+  }
+  if (!WEEK_DAYS.includes(weekDay)) {
+    return res
+      .status(400)
+      .json({ status: 400, message: `Please choose a weekday: ${WEEK_DAYS}` });
+  }
+  try {
+    const stats = await StationService.getAvgFillingRatesByTimeSlot(
+      timeSlot % 24,
+      weekDay
+    );
     return res.json(stats);
   } catch (e) {
     return res.status(400).json({ status: 400, message: e.message });
