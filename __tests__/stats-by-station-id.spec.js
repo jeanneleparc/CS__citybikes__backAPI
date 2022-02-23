@@ -68,7 +68,7 @@ describe("Route Stats By Id By Day", () => {
     );
   });
 
-  test("#2 - GET / - Uncorrect weekDay", async () => {
+  test("#3 - GET / - Uncorrect weekDay", async () => {
     const response = await request(app)
       .post(url)
       .send({ id: 1, weekDay: "hello" });
@@ -79,7 +79,7 @@ describe("Route Stats By Id By Day", () => {
     );
   });
 
-  test("#3 - GET / - Uncorrect station id", async () => {
+  test("#4 - GET / - Uncorrect station id", async () => {
     const response = await request(app)
       .post(url)
       .send({ id: "Hello", weekDay: dayOfTheWeek });
@@ -88,7 +88,7 @@ describe("Route Stats By Id By Day", () => {
     expect(response.body.message).toBe("Station id must be a number.");
   });
 
-  test("#2 - GET / - Good", async () => {
+  test("#5 - GET / - Good", async () => {
     // Populate DB
     await StatsByStationByHour.insertMany(mockStatsByIdByDay);
 
