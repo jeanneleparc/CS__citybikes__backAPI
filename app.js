@@ -3,9 +3,11 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const routes = require("./src/routes/station_route"); // import the routes
 
+const baseURL = process.env.BASE_URL || "localhost";
+
 const MONGO_URI =
   process.env.MONGO_URI ||
-  `mongodb://127.0.0.1:27017/citibikes${
+  `mongodb://${baseURL}:27017/citibikes${
     process.env.NODE_ENV === "test" ? "-test" : ""
   }`;
 
@@ -26,14 +28,12 @@ class App {
   middlewares() {
     this.server.use(express.json());
     this.server.use((req, res, next) => {
-      const allowedOrigins = ["http://localhost:4200", "http://127.0.0.1:4200"];
-      const { origin } = req.headers;
-      if (allowedOrigins.includes(origin)) {
-        res.setHeader("Access-Control-Allow-Origin", origin);
-      }
-      res.header("Access-Control-Allow-Methods", "GET, OPTIONS");
-      res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-      res.header("Access-Control-Allow-Credentials", true);
+      res.header("Access-Control-Allow-Origin", `http://${baseURL}:4200`);
+      res.header(
+        "Access-Control-Allow-Methods",
+        "GET,PUT,POST,DELETE,PATCH,OPTIONS"
+      );
+      res.header("Access-Control-Allow-Headers", "*");
       next();
     });
     this.server.use(bodyParser.json({ extended: true }));
