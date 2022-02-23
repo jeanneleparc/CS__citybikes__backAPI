@@ -67,7 +67,7 @@ describe("Route Average Filling Rate by Time Slot", () => {
 
   const body = { weekDay: "monday", timeSlot: 1 };
 
-  test("#1 - GET / - Without data", async () => {
+  test("#1 - GET / - Without params timeSlot and weekDay", async () => {
     const response = await request(app).post(url);
     expect(response).toBeDefined();
     expect(response.statusCode).toBe(400);
