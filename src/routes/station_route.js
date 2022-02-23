@@ -7,8 +7,8 @@ router.get("/station_status", StationController.getLastStatus);
 
 router.get("/station_information", StationController.getLastInformation);
 
-router.get(
-  "/stats_avg_filling_rate/:id/:day",
+router.post(
+  "/stats_avg_filling_rate_by_station",
   StationController.getAvgFillingRateByIdByDay
 );
 

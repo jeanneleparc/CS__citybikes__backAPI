@@ -1,12 +1,13 @@
 const StationService = require("../services/station_service");
 
 const WEEK_DAYS = [
-  "monday",
-  "tuesday",
-  "wednesday",
-  "thursday",
-  "saturday",
-  "sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+  "Sunday",
 ];
 
 exports.getLastStatus = async (req, res) => {
@@ -31,9 +32,26 @@ exports.getLastInformation = async (req, res) => {
 };
 
 exports.getAvgFillingRateByIdByDay = async (req, res) => {
-  const { id, day } = req.params;
+  const { id, weekDay } = req.body;
+
+  if (id === undefined || weekDay === undefined) {
+    return res.status(400).json({
+      status: 400,
+      message: "You must give a station id and a weekDay.",
+    });
+  }
+  if (typeof id !== "number") {
+    return res
+      .status(400)
+      .json({ status: 400, message: "Station id must be a number." });
+  }
+  if (!WEEK_DAYS.includes(weekDay)) {
+    return res
+      .status(400)
+      .json({ status: 400, message: `Please choose a weekday: ${WEEK_DAYS}` });
+  }
   try {
-    const stats = await StationService.getAvgFillingRateByIdByDay(id, day);
+    const stats = await StationService.getAvgFillingRateByIdByDay(id, weekDay);
     return res.json(stats);
   } catch (e) {
     return res.status(400).json({ status: 400, message: e.message });

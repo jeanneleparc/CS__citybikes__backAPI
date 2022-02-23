@@ -52,16 +52,49 @@ describe("Route Stats By Id By Day", () => {
   const avgFillingRate = sumFillingRateArray.map((elt) => elt / 3);
 
   test("#1 - GET / - Without data return 200", async () => {
-    const response = await request(app).get(`${url}1/${dayOfTheWeek}`);
+    const response = await request(app)
+      .post(url)
+      .send({ id: 1, weekDay: dayOfTheWeek });
     expect(response).toBeDefined();
     expect(response.statusCode).toBe(200);
+  });
+
+  test("#2 - GET / - Without params idStation and weekDay", async () => {
+    const response = await request(app).post(url);
+    expect(response).toBeDefined();
+    expect(response.statusCode).toBe(400);
+    expect(response.body.message).toBe(
+      "You must give a station id and a weekDay."
+    );
+  });
+
+  test("#2 - GET / - Uncorrect weekDay", async () => {
+    const response = await request(app)
+      .post(url)
+      .send({ weekDay: "hello", id: 1 });
+    expect(response).toBeDefined();
+    expect(response.statusCode).toBe(400);
+    expect(response.body.message).toBe(
+      "Please choose a weekday: Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday"
+    );
+  });
+
+  test("#3 - GET / - Uncorrect station id", async () => {
+    const response = await request(app)
+      .post(url)
+      .send({ weekDay: dayOfTheWeek, timeSlot: "Hello" });
+    expect(response).toBeDefined();
+    expect(response.statusCode).toBe(400);
+    expect(response.body.message).toBe("Station id must be a number.");
   });
 
   test("#2 - GET / - Good", async () => {
     // Populate DB
     await StatsByStationByHour.insertMany(mockStatsByIdByDay);
 
-    const response = await request(app).get(`${url}1/${dayOfTheWeek}`);
+    const response = await request(app)
+      .post(url)
+      .send({ id: 1, weekDay: dayOfTheWeek });
     expect(response).toBeDefined();
     expect(response.statusCode).toBe(200);
     expect(response.body).toHaveLength(24);
