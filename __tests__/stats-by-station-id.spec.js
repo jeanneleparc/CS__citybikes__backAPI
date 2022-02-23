@@ -24,13 +24,13 @@ afterAll(() => {
 });
 
 describe("Route Stats By Id By Day", () => {
-  const dateOfToday = moment()
+  const dateOfYesterday = moment()
     .tz("America/New_York")
     .startOf("day")
     .subtract(1, "day");
-  const dayOfTheWeek = dateOfToday.clone().format("dddd");
+  const dayOfTheWeek = dateOfYesterday.clone().format("dddd");
   const mockStatsByIdByDay = [];
-  const capacityStation1 = 40;
+  const capacityStation = 40;
   const sumFillingRateArray = new Array(24).fill(0);
   for (let i = 0; i < 3; i += 1) {
     for (let j = 0; j < 24; j += 1) {
@@ -42,8 +42,8 @@ describe("Route Stats By Id By Day", () => {
         station_lat: 10,
         time_slot: j,
         filling_rate: tmpFillRate,
-        avg_bikes_nb: tmpFillRate * capacityStation1,
-        date: dateOfToday.clone().subtract(i * 7, "days"),
+        avg_bikes_nb: tmpFillRate * capacityStation,
+        date: dateOfYesterday.clone().subtract(i * 7, "days"),
       };
       sumFillingRateArray[j] += tmpFillRate;
       mockStatsByIdByDay.push(tmpObj);
