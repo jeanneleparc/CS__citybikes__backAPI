@@ -6,6 +6,7 @@
   "scripts": {
     "test": "NODE_ENV=test jest --detectOpenHandles",
     "dev": "nodemon server",
+    "serve": "node server.js",
     "lint": "eslint ./",
     "prettier": "eslint . --fix",
     "prepare": "husky install"
