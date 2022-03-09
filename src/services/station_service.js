@@ -64,18 +64,22 @@ exports.getAvgFillingRateByIdByDay = async (idStation, day) => {
   });
 
   for (let timeSlot = 0; timeSlot < 24; timeSlot += 1) {
-    const sumFillingRateByTimeSlot = stats.reduce(
+    const { sumFillingRate, count } = stats.reduce(
       (accumulator, currentValue) => {
         if (currentValue.time_slot === timeSlot) {
-          return accumulator + currentValue.filling_rate;
+          return {
+            sumFillingRate:
+              accumulator.sumFillingRate + currentValue.filling_rate,
+            count: accumulator.count + 1,
+          };
         }
         return accumulator;
       },
-      0
+      { sumFillingRate: 0, count: 0 }
     );
     dataAvgFillingRate.push({
       timeSlot,
-      avgFillingRate: sumFillingRateByTimeSlot / 3, // we divide by the number of weeks
+      avgFillingRate: sumFillingRate / count, // we divide by the number of weeks found
     });
   }
   return dataAvgFillingRate;
