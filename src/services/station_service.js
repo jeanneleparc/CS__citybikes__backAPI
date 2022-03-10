@@ -99,6 +99,7 @@ exports.getAvgFillingRatesByTimeSlot = async (timeSlot, day) => {
       tmpStations[stationId].counter += 1;
     } else {
       tmpStations[stationId] = {
+        name: stat.station_name,
         accumulator: stat.filling_rate,
         counter: 1,
       };
@@ -110,8 +111,19 @@ exports.getAvgFillingRatesByTimeSlot = async (timeSlot, day) => {
     const station = tmpStations[stationId];
     result.push({
       stationId: parseInt(stationId, 10),
-      fillingRate: station.accumulator / station.counter,
+      stationName: station.name,
+      fillingRate: Math.round((station.accumulator / station.counter) * 100),
     });
   });
   return result;
+};
+
+exports.getStationsRanking = async (timeSlot, day) => {
+  // get the stations stats
+  const stationsStats = await this.getAvgFillingRatesByTimeSlot(timeSlot, day);
+
+  // sort the stations by filling rate desc, return the first 10 stations
+  return stationsStats
+    .sort((a, b) => b.fillingRate - a.fillingRate)
+    .slice(0, 10);
 };

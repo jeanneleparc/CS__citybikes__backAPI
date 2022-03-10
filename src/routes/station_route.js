@@ -17,4 +17,6 @@ router.post(
   StationController.getAvgFillingRateByTimeSlotByDay
 );
 
+router.post("/stats_ranking", StationController.getStationsRanking);
+
 module.exports = router;
