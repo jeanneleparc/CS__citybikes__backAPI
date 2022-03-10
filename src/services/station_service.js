@@ -123,7 +123,7 @@ exports.getStatsByTimeSlot = async (timeSlot, day) => {
       fillingRate: Math.round(
         (station.fillingRateAccumulator / station.counter) * 100
       ),
-      avgBikesNb: station.bikesNbAccumulator,
+      avgBikesNb: Math.round(station.bikesNbAccumulator / station.counter),
       longitude: station.longitude,
       latitude: station.latitude,
     });

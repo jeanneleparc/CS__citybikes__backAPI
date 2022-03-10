@@ -13,7 +13,7 @@ router.post(
 );
 
 router.post(
-  "/stats_avg_filling_rate_by_timeslot",
+  "/stats_by_timeslot",
   StationController.getAvgFillingRateByTimeSlotByDay
 );
 
