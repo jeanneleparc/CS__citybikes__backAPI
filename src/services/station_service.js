@@ -117,6 +117,10 @@ exports.getStatsByTimeSlot = async (timeSlot, day) => {
   // compute the average filling rate for each station
   Object.keys(tmpStations).forEach((stationId) => {
     const station = tmpStations[stationId];
+    if (stationId === 1) {
+      console.log("hello", station.bikesNbAccumulator);
+      console.log(station.counter);
+    }
     result.push({
       stationId: parseInt(stationId, 10),
       stationName: station.name,

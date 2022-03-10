@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 const app = require("../app");
 const statsByStationByHour = require("../src/models/stats-by-station-by-hour-model");
 
-const url = "/stats_avg_filling_rate_by_timeslot";
+const url = "/stats_by_timeslot";
 
 /* Supprimer toutes les stats */
 function deleteAll() {
@@ -24,15 +24,21 @@ afterAll(() => {
   mongoose.connection.close();
 });
 
-function createMockStat({ stationId, timeSlot, date, fillingRate }) {
+function createMockStat({
+  stationId,
+  timeSlot,
+  date,
+  fillingRate,
+  avgBikesNb,
+}) {
   return {
     station_id: stationId,
     station_name: "station",
-    station_long: 0,
-    station_lat: 0,
+    station_long: 10,
+    station_lat: 10,
     time_slot: timeSlot,
     filling_rate: fillingRate,
-    avg_bikes_nb: 3,
+    avg_bikes_nb: avgBikesNb,
     date,
   };
 }
@@ -43,37 +49,31 @@ describe("Route Average Filling Rate by Time Slot", () => {
     {
       stationId: 1,
       timeSlot: 1,
-      station_long: 10,
-      station_lat: 10,
       date: moment().day("monday").tz("America/New_York").startOf("day"),
       fillingRate: 0.75,
-      avg_bikes_nb: 30,
+      avgBikesNb: 30,
     },
     {
       stationId: 1,
       timeSlot: 1,
-      station_long: 10,
-      station_lat: 10,
       date: moment()
         .day("monday")
         .tz("America/New_York")
         .startOf("day")
         .subtract(1, "days"),
       fillingRate: 1,
-      avg_bikes_nb: 40,
+      avgBikesNb: 40,
     },
     {
       stationId: 1,
       timeSlot: 1,
-      station_long: 10,
-      station_lat: 10,
       date: moment()
         .day("monday")
         .tz("America/New_York")
         .startOf("day")
         .subtract(14, "days"),
       fillingRate: 0.25,
-      avg_bikes_nb: 10,
+      avgBikesNb: 10,
     },
   ];
 
