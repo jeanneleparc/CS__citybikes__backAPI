@@ -85,7 +85,7 @@ exports.getAvgFillingRateByIdByDay = async (idStation, day) => {
   return dataAvgFillingRate;
 };
 
-exports.getAvgFillingRatesByTimeSlot = async (timeSlot, day) => {
+exports.getStatsByTimeSlot = async (timeSlot, day) => {
   // check if dayOfWeek <= todayDayOfWeek, otherwise substract 7 days
   const dateOfDay = getWeekDayMarker(day);
 
@@ -99,13 +99,17 @@ exports.getAvgFillingRatesByTimeSlot = async (timeSlot, day) => {
   stats.forEach((stat) => {
     const stationId = stat.station_id;
     if (tmpStations[stationId]) {
-      tmpStations[stationId].accumulator += stat.filling_rate;
+      tmpStations[stationId].fillingRateAccumulator += stat.filling_rate;
+      tmpStations[stationId].bikesNbAccumulator += stat.avg_bikes_nb;
       tmpStations[stationId].counter += 1;
     } else {
       tmpStations[stationId] = {
         name: stat.station_name,
-        accumulator: stat.filling_rate,
+        fillingRateAccumulator: stat.filling_rate,
+        bikesNbAccumulator: stat.avg_bikes_nb,
         counter: 1,
+        longitude: stat.station_long,
+        latitude: stat.station_lat,
       };
     }
   });
@@ -116,7 +120,12 @@ exports.getAvgFillingRatesByTimeSlot = async (timeSlot, day) => {
     result.push({
       stationId: parseInt(stationId, 10),
       stationName: station.name,
-      fillingRate: Math.round((station.accumulator / station.counter) * 100),
+      fillingRate: Math.round(
+        (station.fillingRateAccumulator / station.counter) * 100
+      ),
+      avgBikesNb: station.bikesNbAccumulator,
+      longitude: station.longitude,
+      latitude: station.latitude,
     });
   });
   return result;
@@ -124,7 +133,7 @@ exports.getAvgFillingRatesByTimeSlot = async (timeSlot, day) => {
 
 exports.getStationsRanking = async (timeSlot, day) => {
   // get the stations stats
-  const stationsStats = await this.getAvgFillingRatesByTimeSlot(timeSlot, day);
+  const stationsStats = await this.getStatsByTimeSlot(timeSlot, day);
 
   // sort the stations by filling rate desc, return the first 10 stations
   return stationsStats
