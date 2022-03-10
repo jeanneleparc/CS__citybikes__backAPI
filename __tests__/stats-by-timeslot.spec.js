@@ -117,7 +117,7 @@ describe("Route Average Filling Rate by Time Slot", () => {
     expect(response.statusCode).toBe(200);
     expect(response.body.length).toBe(1);
     expect(response.body[0].stationId).toBe(1);
-    expect(response.body[0].fillingRate).toBe(0.5);
+    expect(response.body[0].fillingRate).toBe(50);
   });
 
   test("#4 - GET / - Correct response (test timeslot)", async () => {
@@ -129,6 +129,6 @@ describe("Route Average Filling Rate by Time Slot", () => {
     expect(response.statusCode).toBe(200);
     expect(response.body.length).toBe(1);
     expect(response.body[0].stationId).toBe(1);
-    expect(response.body[0].fillingRate).toBe(0.5);
+    expect(response.body[0].fillingRate).toBe(50);
   });
 });
