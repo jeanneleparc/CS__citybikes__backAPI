@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 const app = require("../app");
 const statsByStationByHour = require("../src/models/stats-by-station-by-hour-model");
 
-const url = "/stats_avg_filling_rate_by_timeslot";
+const url = "/stats_by_timeslot";
 
 /* Supprimer toutes les stats */
 function deleteAll() {
@@ -24,15 +24,21 @@ afterAll(() => {
   mongoose.connection.close();
 });
 
-function createMockStat({ stationId, timeSlot, date, fillingRate }) {
+function createMockStat({
+  stationId,
+  timeSlot,
+  date,
+  fillingRate,
+  avgBikesNb,
+}) {
   return {
     station_id: stationId,
     station_name: "station",
-    station_long: 0,
-    station_lat: 0,
+    station_long: 10,
+    station_lat: 10,
     time_slot: timeSlot,
     filling_rate: fillingRate,
-    avg_bikes_nb: 3,
+    avg_bikes_nb: avgBikesNb,
     date,
   };
 }
@@ -45,6 +51,7 @@ describe("Route Average Filling Rate by Time Slot", () => {
       timeSlot: 1,
       date: moment().day("monday").tz("America/New_York").startOf("day"),
       fillingRate: 0.75,
+      avgBikesNb: 30,
     },
     {
       stationId: 1,
@@ -55,6 +62,7 @@ describe("Route Average Filling Rate by Time Slot", () => {
         .startOf("day")
         .subtract(1, "days"),
       fillingRate: 1,
+      avgBikesNb: 40,
     },
     {
       stationId: 1,
@@ -65,6 +73,7 @@ describe("Route Average Filling Rate by Time Slot", () => {
         .startOf("day")
         .subtract(14, "days"),
       fillingRate: 0.25,
+      avgBikesNb: 10,
     },
   ];
 
@@ -118,6 +127,9 @@ describe("Route Average Filling Rate by Time Slot", () => {
     expect(response.body.length).toBe(1);
     expect(response.body[0].stationId).toBe(1);
     expect(response.body[0].fillingRate).toBe(50);
+    expect(response.body[0].avgBikesNb).toBe(20);
+    expect(response.body[0].longitude).toBe(10);
+    expect(response.body[0].latitude).toBe(10);
   });
 
   test("#4 - GET / - Correct response (test timeslot)", async () => {
@@ -130,5 +142,8 @@ describe("Route Average Filling Rate by Time Slot", () => {
     expect(response.body.length).toBe(1);
     expect(response.body[0].stationId).toBe(1);
     expect(response.body[0].fillingRate).toBe(50);
+    expect(response.body[0].avgBikesNb).toBe(20);
+    expect(response.body[0].longitude).toBe(10);
+    expect(response.body[0].latitude).toBe(10);
   });
 });

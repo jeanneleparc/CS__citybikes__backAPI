@@ -80,7 +80,7 @@ exports.getAvgFillingRateByTimeSlotByDay = async (req, res) => {
   }
 
   try {
-    const stats = await StationService.getAvgFillingRatesByTimeSlot(
+    const stats = await StationService.getStatsByTimeSlot(
       timeSlot % 24,
       weekDay
     );
