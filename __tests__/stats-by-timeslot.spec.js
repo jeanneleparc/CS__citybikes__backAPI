@@ -125,7 +125,7 @@ describe("Route Average Filling Rate by Time Slot", () => {
     expect(response).toBeDefined();
     expect(response.statusCode).toBe(200);
     expect(response.body.length).toBe(1);
-    expect(response.body[0].stationId).toBe(1);
+    expect(response.body[0].id).toBe(1);
     expect(response.body[0].fillingRate).toBe(50);
     expect(response.body[0].avgBikesNb).toBe(20);
     expect(response.body[0].longitude).toBe(10);
@@ -140,7 +140,7 @@ describe("Route Average Filling Rate by Time Slot", () => {
     expect(response).toBeDefined();
     expect(response.statusCode).toBe(200);
     expect(response.body.length).toBe(1);
-    expect(response.body[0].stationId).toBe(1);
+    expect(response.body[0].id).toBe(1);
     expect(response.body[0].fillingRate).toBe(50);
     expect(response.body[0].avgBikesNb).toBe(20);
     expect(response.body[0].longitude).toBe(10);

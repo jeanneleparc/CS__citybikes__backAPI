@@ -118,8 +118,8 @@ exports.getStatsByTimeSlot = async (timeSlot, day) => {
   Object.keys(tmpStations).forEach((stationId) => {
     const station = tmpStations[stationId];
     result.push({
-      stationId: parseInt(stationId, 10),
-      stationName: station.name,
+      id: parseInt(stationId, 10),
+      name: station.name,
       fillingRate: Math.round(
         (station.fillingRateAccumulator / station.counter) * 100
       ),
