@@ -11,7 +11,10 @@ exports.getSuggestions = async (req, res) => {
         result.features
           .filter((e) => e.properties.region_a === "NY")
           .map((e) => ({
-            coordinates: e.geometry.coordinates,
+            coordinates: {
+              long: e.geometry.coordinates[0],
+              lat: e.geometry.coordinates[1],
+            },
             label: e.properties.label,
           }))
       );
