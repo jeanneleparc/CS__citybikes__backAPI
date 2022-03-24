@@ -2,6 +2,7 @@ const express = require("express");
 
 const router = express.Router();
 const StationController = require("../controllers/station_controller");
+const GeocodeController = require("../controllers/geocode_controller");
 
 router.get("/station_status", StationController.getLastStatus);
 
@@ -18,5 +19,7 @@ router.post(
 );
 
 router.post("/stats_ranking", StationController.getStationsRanking);
+
+router.post("/geocode", GeocodeController.getSuggestions);
 
 module.exports = router;
