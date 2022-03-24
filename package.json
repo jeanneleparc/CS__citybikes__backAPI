@@ -22,12 +22,12 @@
   },
   "homepage": "https://github.com/jeanneleparc/CS__citybikes__backAPI#readme",
   "dependencies": {
+    "axios": "^0.26.1",
     "body-parser": "^1.19.1",
     "express": "^4.17.1",
     "moment": "^2.29.1",
     "moment-timezone": "^0.5.34",
-    "mongoose": "^6.0.12",
-    "request": "^2.88.2"
+    "mongoose": "^6.0.12"
   },
   "devDependencies": {
     "eslint": "^8.6.0",

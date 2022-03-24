@@ -1,24 +1,9 @@
-const request = require("request");
+const GeocodeService = require("../services/geocode_service");
 
 exports.getSuggestions = async (req, res) => {
   const { q: text } = req.body;
-  const geocodeApiKEY = process.env.GEOCODE_API_KEY;
-  const url = `https://app.geocodeapi.io/api/v1/autocomplete?apikey=${geocodeApiKEY}&text=${text}&size=100`;
-  request({ url }, (error, response, body) => {
-    if (!error && response.statusCode === 200) {
-      const result = JSON.parse(body);
-      return res.status(200).send(
-        result.features
-          .filter((e) => e.properties.region_a === "NY")
-          .map((e) => ({
-            coordinates: {
-              long: e.geometry.coordinates[0],
-              lat: e.geometry.coordinates[1],
-            },
-            label: e.properties.label,
-          }))
-      );
-    }
-    return res.status(response.statusCode);
-  });
+  const result = await GeocodeService.getSuggestions(text).catch((error) =>
+    res.status(400).send(error.message)
+  );
+  res.send(result);
 };
