@@ -28,7 +28,7 @@ class App {
   middlewares() {
     this.server.use(express.json());
     this.server.use((req, res, next) => {
-      res.header("Access-Control-Allow-Origin", `http://${baseURL}:4200`);
+      res.header("Access-Control-Allow-Origin", `http://${baseURL}:80`);
       res.header(
         "Access-Control-Allow-Methods",
         "GET,PUT,POST,DELETE,PATCH,OPTIONS"
