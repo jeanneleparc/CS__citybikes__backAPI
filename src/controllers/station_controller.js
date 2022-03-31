@@ -1,14 +1,5 @@
+const { WEEK_DAYS } = require("../constants");
 const StationService = require("../services/station_service");
-
-const WEEK_DAYS = [
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-  "Sunday",
-];
 
 exports.getLastStatus = async (req, res) => {
   try {
@@ -52,6 +43,28 @@ exports.getAvgFillingRateByIdByDay = async (req, res) => {
   }
   try {
     const stats = await StationService.getAvgFillingRateByIdByDay(id, weekDay);
+    return res.json(stats);
+  } catch (e) {
+    return res.status(400).json({ status: 400, message: e.message });
+  }
+};
+
+exports.getStatsById = async (req, res) => {
+  const { id } = req.body;
+
+  if (id === undefined) {
+    return res.status(400).json({
+      status: 400,
+      message: "You must give a station id.",
+    });
+  }
+  if (typeof id !== "number") {
+    return res
+      .status(400)
+      .json({ status: 400, message: "Station id must be a number." });
+  }
+  try {
+    const stats = await StationService.getStatsById(id);
     return res.json(stats);
   } catch (e) {
     return res.status(400).json({ status: 400, message: e.message });

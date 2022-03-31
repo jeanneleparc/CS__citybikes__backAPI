@@ -13,6 +13,8 @@ router.post(
   StationController.getAvgFillingRateByIdByDay
 );
 
+router.post("/stats_by_station", StationController.getStatsById);
+
 router.post(
   "/stats_by_timeslot",
   StationController.getAvgFillingRateByTimeSlotByDay

@@ -2,6 +2,7 @@ const moment = require("moment-timezone");
 const StationStatus = require("../models/station-status-model");
 const StationInformation = require("../models/station-information-model");
 const StatsByStationByHour = require("../models/stats-by-station-by-hour-model");
+const { WEEK_DAYS } = require("../constants");
 
 exports.getLastStatus = async () => {
   const lastStatus = await StationStatus.findOne().sort({ last_updated: -1 });
@@ -83,6 +84,20 @@ exports.getAvgFillingRateByIdByDay = async (idStation, day) => {
     });
   }
   return dataAvgFillingRate;
+};
+
+exports.getStatsById = async (idStation) => {
+  const stats = {};
+  await Promise.all(
+    WEEK_DAYS.map(async (weekday) => {
+      const statsByWeekday = await this.getAvgFillingRateByIdByDay(
+        idStation,
+        weekday
+      );
+      stats[weekday] = statsByWeekday;
+    })
+  );
+  return stats;
 };
 
 exports.getStatsByTimeSlot = async (timeSlot, day) => {
